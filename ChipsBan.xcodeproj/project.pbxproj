@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,10 +13,13 @@
 		63332ED123DFF6B5000D7E24 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63332ED023DFF6B5000D7E24 /* Assets.xcassets */; };
 		63332ED423DFF6B5000D7E24 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63332ED323DFF6B5000D7E24 /* Preview Assets.xcassets */; };
 		63332ED723DFF6B5000D7E24 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63332ED523DFF6B5000D7E24 /* LaunchScreen.storyboard */; };
+		63332EE023DFF706000D7E24 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 63332EDF23DFF706000D7E24 /* SwiftSoup */; };
+		63332EE223DFF726000D7E24 /* Ban.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63332EE123DFF726000D7E24 /* Ban.swift */; };
+		63332EE523DFF8AE000D7E24 /* Ban.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 63332EE323DFF8AE000D7E24 /* Ban.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		63332EC723DFF6B2000D7E24 /* ChipsBan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChipsBan.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		63332EC723DFF6B2000D7E24 /* 杏吧签到.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "杏吧签到.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		63332ECA23DFF6B2000D7E24 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		63332ECC23DFF6B2000D7E24 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		63332ECE23DFF6B2000D7E24 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -24,6 +27,8 @@
 		63332ED323DFF6B5000D7E24 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		63332ED623DFF6B5000D7E24 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		63332ED823DFF6B5000D7E24 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		63332EE123DFF726000D7E24 /* Ban.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ban.swift; sourceTree = "<group>"; };
+		63332EE423DFF8AE000D7E24 /* Ban.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Ban.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +36,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63332EE023DFF706000D7E24 /* SwiftSoup in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -48,7 +54,7 @@
 		63332EC823DFF6B2000D7E24 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				63332EC723DFF6B2000D7E24 /* ChipsBan.app */,
+				63332EC723DFF6B2000D7E24 /* 杏吧签到.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -59,6 +65,8 @@
 				63332ECA23DFF6B2000D7E24 /* AppDelegate.swift */,
 				63332ECC23DFF6B2000D7E24 /* SceneDelegate.swift */,
 				63332ECE23DFF6B2000D7E24 /* ContentView.swift */,
+				63332EE123DFF726000D7E24 /* Ban.swift */,
+				63332EE323DFF8AE000D7E24 /* Ban.xcdatamodeld */,
 				63332ED023DFF6B5000D7E24 /* Assets.xcassets */,
 				63332ED523DFF6B5000D7E24 /* LaunchScreen.storyboard */,
 				63332ED823DFF6B5000D7E24 /* Info.plist */,
@@ -91,8 +99,11 @@
 			dependencies = (
 			);
 			name = ChipsBan;
+			packageProductDependencies = (
+				63332EDF23DFF706000D7E24 /* SwiftSoup */,
+			);
 			productName = ChipsBan;
-			productReference = 63332EC723DFF6B2000D7E24 /* ChipsBan.app */;
+			productReference = 63332EC723DFF6B2000D7E24 /* 杏吧签到.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -119,6 +130,9 @@
 				Base,
 			);
 			mainGroup = 63332EBE23DFF6B2000D7E24;
+			packageReferences = (
+				63332EDE23DFF706000D7E24 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
+			);
 			productRefGroup = 63332EC823DFF6B2000D7E24 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -147,8 +161,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				63332ECB23DFF6B2000D7E24 /* AppDelegate.swift in Sources */,
+				63332EE223DFF726000D7E24 /* Ban.swift in Sources */,
 				63332ECD23DFF6B2000D7E24 /* SceneDelegate.swift in Sources */,
 				63332ECF23DFF6B2000D7E24 /* ContentView.swift in Sources */,
+				63332EE523DFF8AE000D7E24 /* Ban.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -286,6 +302,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"ChipsBan/Preview Content\"";
+				DEVELOPMENT_TEAM = E6NP67H473;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = ChipsBan/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -293,7 +310,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ascp.op.ChipsBan;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "杏吧签到";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -305,6 +322,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"ChipsBan/Preview Content\"";
+				DEVELOPMENT_TEAM = E6NP67H473;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = ChipsBan/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -312,7 +330,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ascp.op.ChipsBan;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "杏吧签到";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -340,6 +358,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		63332EDE23DFF706000D7E24 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/scinfu/SwiftSoup.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		63332EDF23DFF706000D7E24 /* SwiftSoup */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 63332EDE23DFF706000D7E24 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
+			productName = SwiftSoup;
+		};
+/* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		63332EE323DFF8AE000D7E24 /* Ban.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				63332EE423DFF8AE000D7E24 /* Ban.xcdatamodel */,
+			);
+			currentVersion = 63332EE423DFF8AE000D7E24 /* Ban.xcdatamodel */;
+			path = Ban.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 63332EBF23DFF6B2000D7E24 /* Project object */;
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15702" systemVersion="19C57" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Check" representedClassName="Check" syncable="YES" codeGenerationType="class">
+        <attribute name="account" attributeType="String" defaultValueString="oops"/>
+        <attribute name="password" optional="YES" attributeType="String"/>
+        <attribute name="time" attributeType="Date" defaultDateTimeInterval="601880820" usesScalarValueType="NO"/>
+    </entity>
+    <elements>
+        <element name="Check" positionX="-63" positionY="-18" width="128" height="88"/>
+    </elements>
+</model>
