@@ -15,11 +15,15 @@ class Ban: ObservableObject {
     @Published var todayCheckIn = false
     @Published var username : String?
     @Published var password : String?
-    var goLogin: AnyCancellable?
-    var goChioce: AnyCancellable?
-    var goCheckIn: AnyCancellable?
+    @Published var goLogin: AnyCancellable?
+    @Published var goChioce: AnyCancellable?
+    @Published var goCheckIn: AnyCancellable?
     
     init() {
+        reload()
+    }
+    
+    func reload() {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentor.viewContext
         let fetch = NSFetchRequest<Check>(entityName: "Check")
         fetch.predicate = NSPredicate.init(value: true)
@@ -71,20 +75,22 @@ class Ban: ObservableObject {
         password = "a016b7182c0de2605b1d118f3c1e7366"
         let fingerprint = "3583691549"
         
-        var request = URLRequest(url: URL(string: "https://www.chezzen.space/member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1")!)
+        let host = UserDefaults.standard.host
+        
+        var request = URLRequest(url: URL(string: "\(host)/member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1")!)
         request.httpMethod = "POST"
         request.addValue("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", forHTTPHeaderField: "accept")
         request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
-        request.addValue("https://www.chezzen.space", forHTTPHeaderField: "origin")
+        request.addValue("\(host)", forHTTPHeaderField: "origin")
         request.addValue("zh-cn", forHTTPHeaderField: "accept-language")
         request.addValue("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15", forHTTPHeaderField: "user-agent")
-        request.addValue("https://www.chezzen.space/", forHTTPHeaderField: "referer")
+        request.addValue("\(host)/", forHTTPHeaderField: "referer")
         request.addValue("gzip, deflate, br", forHTTPHeaderField: "accept-encoding")
  
         request.httpBody = "fingerprint=\(fingerprint)&referer=portal.html&username=\(username ?? "")&password=\(password ?? "")&quickforward=yes&handlekey=ls&sectouchpoint=0".data(using: .utf8, allowLossyConversion: false)!
         let goLogin = URLSession.shared.dataTaskPublisher(for: request)
             .map({ String(data: $0.data, encoding: .utf8) })
-            .receive(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.global())
         self.goLogin = goLogin.sink(receiveCompletion: { error in
             
         }) { [unowned self] result in
@@ -94,15 +100,16 @@ class Ban: ObservableObject {
     }
     
     func choice() {
-        var request = URLRequest(url: URL(string: "https://www.chezzen.space/plugin.php?id=lotteryquiz:lotteryquiz")!)
+        let host = UserDefaults.standard.host
+        var request = URLRequest(url: URL(string: "\(host)/plugin.php?id=lotteryquiz:lotteryquiz")!)
         request.httpMethod = "GET"
         request.addValue("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", forHTTPHeaderField: "accept")
         request.addValue("zh-cn", forHTTPHeaderField: "accept-language")
         request.addValue("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15", forHTTPHeaderField: "user-agent")
-        request.addValue("https://www.chezzen.space/home.php?mod=spacecp&ac=credit&showcredit=1", forHTTPHeaderField: "referer")
+        request.addValue("\(host)/home.php?mod=spacecp&ac=credit&showcredit=1", forHTTPHeaderField: "referer")
         request.addValue("gzip, deflate, br", forHTTPHeaderField: "accept-encoding")
         
-        let goChioce = URLSession.shared.dataTaskPublisher(for: request).map({ String(data: $0.data, encoding: .utf8) }).receive(on: DispatchQueue.main)
+        let goChioce = URLSession.shared.dataTaskPublisher(for: request).map({ String(data: $0.data, encoding: .utf8) }).receive(on: DispatchQueue.global())
         self.goChioce = goChioce.sink(receiveCompletion: { _ in }) { [unowned self] result in
             guard let raw = result else { return }
             do {
@@ -117,14 +124,15 @@ class Ban: ObservableObject {
     }
     
     func realCheckIn(hash: String) {
-        var request = URLRequest(url: URL(string: "https://www.chezzen.space/plugin.php?id=lotteryquiz")!)
+        let host = UserDefaults.standard.host
+        var request = URLRequest(url: URL(string: "\(host)/plugin.php?id=lotteryquiz")!)
         request.httpMethod = "POST"
         request.addValue("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", forHTTPHeaderField: "accept")
         request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
-        request.addValue("https://www.chezzen.space", forHTTPHeaderField: "origin")
+        request.addValue("\(host)", forHTTPHeaderField: "origin")
         request.addValue("zh-cn", forHTTPHeaderField: "accept-language")
         request.addValue("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15", forHTTPHeaderField: "user-agent")
-        request.addValue("https://www.chezzen.space/plugin.php?id=lotteryquiz", forHTTPHeaderField: "referer")
+        request.addValue("\(host)/plugin.php?id=lotteryquiz", forHTTPHeaderField: "referer")
         request.addValue("gzip, deflate, br", forHTTPHeaderField: "accept-encoding")
         
         let data = "formhash=\(hash)&action=checkanswer&answer=B".data(using: .utf8, allowLossyConversion: false)!
@@ -145,6 +153,9 @@ class Ban: ObservableObject {
                     context.insert(item)
                     (UIApplication.shared.delegate as! AppDelegate).saveContext()
                     self.todayCheckIn = true
+                    self.goLogin = nil
+                    self.goChioce = nil
+                    self.goCheckIn = nil
                 }
                 if let msg = try doc.getElementById("answer_msg")?.text() {
                     print(msg)
