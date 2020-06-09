@@ -28,4 +28,14 @@ extension UserDefaults {
             self.set(newValue, forKey: "account")
         }
     }
+    
+    var pasword: String {
+        get {
+            return self.object(forKey: "password") as? String ?? ""
+        }
+        
+        set {
+            set(newValue, forKey: "password")
+        }
+    }
 }

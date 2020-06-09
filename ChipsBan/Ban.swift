@@ -10,14 +10,15 @@ import UIKit
 import CoreData
 import SwiftSoup
 import Combine
+import CryptoKit
 
 class Ban: ObservableObject {
     @Published var todayCheckIn = false
     @Published var username : String?
     @Published var password : String?
-    @Published var goLogin: AnyCancellable?
-    @Published var goChioce: AnyCancellable?
-    @Published var goCheckIn: AnyCancellable?
+    var goLogin: AnyCancellable?
+    var goChioce: AnyCancellable?
+    var goCheckIn: AnyCancellable?
     
     init() {
         reload()
@@ -71,8 +72,8 @@ class Ban: ObservableObject {
     }
     
     func login() {
-        username = "318715498"
-        password = "a016b7182c0de2605b1d118f3c1e7366"
+        username = UserDefaults.standard.account
+        password = "\(Insecure.MD5.hash(data: UserDefaults.standard.pasword.data(using: .utf8)!).description.components(separatedBy: ": ").last ?? "")"
         let fingerprint = "3583691549"
         
         let host = UserDefaults.standard.host

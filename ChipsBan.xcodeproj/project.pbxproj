@@ -19,6 +19,7 @@
 		6337905B23E03EF1001A91D8 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6337905A23E03EF1001A91D8 /* SettingView.swift */; };
 		6337905D23E045E2001A91D8 /* LeftRightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6337905C23E045E2001A91D8 /* LeftRightView.swift */; };
 		6337905F23E14E85001A91D8 /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6337905E23E14E85001A91D8 /* InputView.swift */; };
+		63B473E52487A82A00D490D4 /* PWMD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B473E42487A82A00D490D4 /* PWMD5.swift */; };
 		63E87D6924013FA00037109E /* Host.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E87D6824013FA00037109E /* Host.swift */; };
 /* End PBXBuildFile section */
 
@@ -36,6 +37,7 @@
 		6337905A23E03EF1001A91D8 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
 		6337905C23E045E2001A91D8 /* LeftRightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftRightView.swift; sourceTree = "<group>"; };
 		6337905E23E14E85001A91D8 /* InputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
+		63B473E42487A82A00D490D4 /* PWMD5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PWMD5.swift; sourceTree = "<group>"; };
 		63E87D6824013FA00037109E /* Host.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Host.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -70,6 +72,7 @@
 		63332EC923DFF6B2000D7E24 /* ChipsBan */ = {
 			isa = PBXGroup;
 			children = (
+				63B473E32487A81100D490D4 /* MD5 */,
 				63332ECA23DFF6B2000D7E24 /* AppDelegate.swift */,
 				63332ECC23DFF6B2000D7E24 /* SceneDelegate.swift */,
 				63332ECE23DFF6B2000D7E24 /* ContentView.swift */,
@@ -93,6 +96,14 @@
 				63332ED323DFF6B5000D7E24 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		63B473E32487A81100D490D4 /* MD5 */ = {
+			isa = PBXGroup;
+			children = (
+				63B473E42487A82A00D490D4 /* PWMD5.swift */,
+			);
+			path = MD5;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -177,6 +188,7 @@
 				63332EE223DFF726000D7E24 /* Ban.swift in Sources */,
 				63332ECD23DFF6B2000D7E24 /* SceneDelegate.swift in Sources */,
 				6337905B23E03EF1001A91D8 /* SettingView.swift in Sources */,
+				63B473E52487A82A00D490D4 /* PWMD5.swift in Sources */,
 				6337905F23E14E85001A91D8 /* InputView.swift in Sources */,
 				63E87D6924013FA00037109E /* Host.swift in Sources */,
 				63332ECF23DFF6B2000D7E24 /* ContentView.swift in Sources */,
