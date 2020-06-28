@@ -11,7 +11,7 @@ import Foundation
 extension UserDefaults {
     var host: String {
         get {
-            return self.object(forKey: "host") as? String ?? "https://www.chezzen.space"
+            return self.object(forKey: "host") as? String ?? "https://www.aitrug.space"
         }
         
         set {

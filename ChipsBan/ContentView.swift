@@ -13,7 +13,7 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             VStack {
-                Text(needShow() ? "正在签到":"").font(.title).foregroundColor(.orange)
+                Text(needShow() ? ban.state.text:"").font(.title).foregroundColor(.orange)
                 Spacer()
                 ZStack {
                     Rectangle().cornerRadius(100).frame(width: 200, height: 200).foregroundColor(ban.todayCheckIn ? .red:.blue).onTapGesture {
@@ -35,23 +35,12 @@ struct ContentView: View {
     }
     
     func needShow() -> Bool {
-        if ban.goLogin != nil, ban.goChioce != nil, ban.goCheckIn != nil {
+        switch ban.state {
+        case .normal:
             return false
-        }
-        
-        if let _ = ban.goLogin {
+        default:
             return true
         }
-        
-        if let _ = ban.goChioce {
-            return true
-        }
-        
-        if let _ = ban.goCheckIn {
-            return true
-        }
-        
-        return false
     }
 }
 

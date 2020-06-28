@@ -13,12 +13,29 @@ import Combine
 import CryptoKit
 
 class Ban: ObservableObject {
+    enum State {
+        case normal
+        case getCookie
+        case login
+        case fetchQuestion
+        case uploadAnswser
+        case failed
+        
+        var text: String {
+            let sets: [State:String] = [.normal: "",
+                                        .getCookie: "首页加载",
+                                        .login: "登录中",
+                                        .fetchQuestion: "获取题目",
+                                        .uploadAnswser: "上传答案",
+                                        .failed: "失败"]
+            return sets[self] ?? ""
+        }
+    }
+    
     @Published var todayCheckIn = false
     @Published var username : String?
     @Published var password : String?
-    var goLogin: AnyCancellable?
-    var goChioce: AnyCancellable?
-    var goCheckIn: AnyCancellable?
+    @Published var state : State = .normal
     var cancels = Set<AnyCancellable>()
     
     private var latestCookie = ""
@@ -58,9 +75,7 @@ class Ban: ObservableObject {
     
     func failedCompletion() {
         self.todayCheckIn = false
-        self.goLogin = nil
-        self.goChioce = nil
-        self.goCheckIn = nil
+        state = .failed
     }
     
     func debugClear() {
@@ -92,19 +107,27 @@ class Ban: ObservableObject {
         request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
         request.addValue("zh-cn", forHTTPHeaderField: "Accept-Language")
         request.addValue("gzip, deflate, br", forHTTPHeaderField: "accept-encoding")
-//        request.addValue("Keep-Alive", forHTTPHeaderField: "Connection")
-        URLSession.shared.dataTaskPublisher(for: request).map({ $1 as? HTTPURLResponse }).replaceError(with: nil).receive(on: DispatchQueue.main).eraseToAnyPublisher().sink(receiveValue: { [weak self] response in
-            guard let res = response else { return }
-            print(">>> response: \(res)")
-            guard let cookie = res.allHeaderFields["Set-Cookie"] as? String else { return }
-            print(">>> Set-Cookie: \(cookie)")
-//            self?.cookieCache(response: res)
-            self?.latestCookie = cookie
-            self?.login(cookie: cookie)
-        }).store(in: &cancels)
+        state = .getCookie
+        URLSession.shared.dataTaskPublisher(for: request)
+            .map({ $1 as? HTTPURLResponse })
+            .replaceError(with: nil)
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+            .sink(receiveValue: { [weak self] response in
+                guard let res = response else { return }
+                print(">>> response: \(res)")
+                guard let cookie = res.allHeaderFields["Set-Cookie"] as? String else {
+                    self?.state = .failed
+                    return
+                }
+                print(">>> Set-Cookie: \(cookie)")
+                self?.latestCookie = cookie
+                self?.login()
+            }).store(in: &cancels)
     }
     
-    func login(cookie: String) {
+    func login() {
+        state = .login
         username = UserDefaults.standard.account
         password = "\(Insecure.MD5.hash(data: UserDefaults.standard.pasword.data(using: .utf8)!).description.components(separatedBy: ": ").last ?? "")"
         let fingerprint = "3583691549"
@@ -122,7 +145,7 @@ class Ban: ObservableObject {
         request.addValue("\(host)/", forHTTPHeaderField: "Referer")
         request.addValue("gzip, deflate, br", forHTTPHeaderField: "Accept-Encoding")
         request.httpBody = "fingerprint=\(fingerprint)&referer=portal.html&username=\(username ?? "")&password=\(password ?? "")&quickforward=yes&handlekey=ls&sectouchpoint=0".data(using: .utf8, allowLossyConversion: false)!
-        let goLogin = URLSession.shared.dataTaskPublisher(for: request)
+        URLSession.shared.dataTaskPublisher(for: request)
             .map({ data, response -> String? in
                 if let res = response as? HTTPURLResponse {
                     self.cookieCache(response: res)
@@ -131,13 +154,16 @@ class Ban: ObservableObject {
                 return String(data: data, encoding: .utf8)
             })
             .receive(on: DispatchQueue.main)
-        self.goLogin = goLogin.eraseToAnyPublisher().replaceError(with: nil).sink(receiveValue: { [weak self] result in
-            print(result ?? "oops")
-            self?.choice()
-        })
+            .eraseToAnyPublisher()
+            .replaceError(with: nil)
+            .sink(receiveValue: { [weak self] result in
+                print(result ?? "oops")
+                self?.choice()
+            }).store(in: &cancels)
     }
     
     func choice() {
+        state = .fetchQuestion
         let host = UserDefaults.standard.host
         var request = URLRequest(url: URL(string: "\(host)/plugin.php?id=lotteryquiz:lotteryquiz")!)
         request.httpMethod = "GET"
@@ -147,15 +173,17 @@ class Ban: ObservableObject {
         request.addValue(latestCookie, forHTTPHeaderField: "Cookie")
         request.addValue("\(host)/home.php?mod=spacecp&ac=credit&showcredit=1", forHTTPHeaderField: "referer")
         request.addValue("gzip, deflate, br", forHTTPHeaderField: "Accept-Encoding")
-//        request.addValue("Keep-Alive", forHTTPHeaderField: "Connection")
-        let goChioce = URLSession.shared.dataTaskPublisher(for: request).delay(for: 2, scheduler: DispatchQueue.main).map({ data, response -> String? in
+        URLSession.shared.dataTaskPublisher(for: request).delay(for: 2, scheduler: DispatchQueue.main).map({ data, response -> String? in
             if let res = response as? HTTPURLResponse {
                 self.cookieCache(response: res)
                 res.logCookie()
             }
             return String(data: data, encoding: .utf8)
-        }).receive(on: DispatchQueue.main)
-        self.goChioce = goChioce.eraseToAnyPublisher().replaceError(with: nil).sink(receiveValue: { [weak self] result in
+        })
+        .receive(on: DispatchQueue.main)
+        .eraseToAnyPublisher()
+        .replaceError(with: nil)
+        .sink(receiveValue: { [weak self] result in
             print(result ?? "oops")
             guard let raw = result else { return }
             do {
@@ -173,10 +201,11 @@ class Ban: ObservableObject {
                     self?.failedCompletion()
                 }
             }
-        })
+        }).store(in: &cancels)
     }
     
     func realCheckIn(hash: String) {
+        state = .uploadAnswser
         let host = UserDefaults.standard.host
         var request = URLRequest(url: URL(string: "\(host)/plugin.php?id=lotteryquiz")!)
         request.httpMethod = "POST"
@@ -192,14 +221,17 @@ class Ban: ObservableObject {
         let data = "formhash=\(hash)&action=checkanswer&answer=B".data(using: .utf8, allowLossyConversion: false)!
         request.httpBody = data
         
-        let goCheck = URLSession.shared.dataTaskPublisher(for: request).map({ data, response -> String? in
+        URLSession.shared.dataTaskPublisher(for: request).map({ data, response -> String? in
             if let res = response as? HTTPURLResponse {
                 self.cookieCache(response: res)
                 res.logCookie()
             }
             return String(data: data, encoding: .utf8)
-        }).receive(on: DispatchQueue.main)
-        self.goCheckIn = goCheck.eraseToAnyPublisher().replaceError(with: nil).sink(receiveValue: { [weak self] result in
+        })
+        .receive(on: DispatchQueue.main)
+        .eraseToAnyPublisher()
+        .replaceError(with: nil)
+        .sink(receiveValue: { [weak self] result in
             print(result ?? "oops")
             guard let raw = result else { return }
             do {
@@ -214,9 +246,7 @@ class Ban: ObservableObject {
                     context.insert(item)
                     (UIApplication.shared.delegate as! AppDelegate).saveContext()
                     self?.todayCheckIn = true
-                    self?.goLogin = nil
-                    self?.goChioce = nil
-                    self?.goCheckIn = nil
+                    self?.state = .normal
                 }
                 
                 var found = false
@@ -239,7 +269,7 @@ class Ban: ObservableObject {
                 print(error.localizedDescription)
                 self?.failedCompletion()
             }
-        })
+        }).store(in: &cancels)
     }
     
     func cookieCache(response: HTTPURLResponse) {
