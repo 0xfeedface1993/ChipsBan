@@ -36,6 +36,10 @@ struct SettingView: View {
     
     var body: some View {
         VStack {
+//            NavigationLink(destination: HostsView(host: mainHost)) {
+//                LeftRightView(title: "主域名", content: $mainHost)
+//                .frame(height: 44)
+//            }
             LeftRightView(title: "主域名", content: $mainHost)
                 .onTapGesture {
                     self.active(type: .host)
@@ -43,7 +47,7 @@ struct SettingView: View {
             .frame(height: 44)
             if self.activeType == .host {
                 TextField("http(s)://www.example.com", text: $mainHost, onEditingChanged: { state in
-                    
+
                 }, onCommit: {
                     withAnimation {
                         self.activeType = .none
