@@ -14,6 +14,7 @@ struct ContentView: View {
         NavigationView {
             VStack {
                 Text(needShow() ? ban.state.text:"").font(.title).foregroundColor(.orange)
+                Text(ban.reward.text).font(.subheadline).foregroundColor(.gray).padding(.top, 6)
                 Spacer()
                 ZStack {
                     Rectangle().cornerRadius(100).frame(width: 200, height: 200).foregroundColor(ban.todayCheckIn ? .red:.blue).onTapGesture {

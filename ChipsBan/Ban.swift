@@ -30,12 +30,30 @@ class Ban: ObservableObject {
                                         .failed: "失败"]
             return sets[self] ?? ""
         }
+        
+        enum Reward {
+            case normal
+            case waiting
+            case sigin
+            case success
+            case failed
+            
+            var text: String {
+                let sets: [Reward:String] = [.normal: "",
+                                            .waiting: "等待奖励",
+                                            .sigin: "处理中",
+                                            .success: "奖励成功",
+                                            .failed: "获取奖励失败"]
+                return sets[self] ?? ""
+            }
+        }
     }
     
     @Published var todayCheckIn = false
     @Published var username : String?
     @Published var password : String?
     @Published var state : State = .normal
+    @Published var reward : State.Reward = .normal
     var cancels = Set<AnyCancellable>()
     
     private var latestCookie = ""
@@ -76,6 +94,7 @@ class Ban: ObservableObject {
     func failedCompletion() {
         self.todayCheckIn = false
         state = .failed
+        reward = .normal
     }
     
     func debugClear() {
@@ -83,11 +102,18 @@ class Ban: ObservableObject {
         
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentor.viewContext
         let fetch = NSFetchRequest<Check>(entityName: "Check")
-        fetch.predicate = NSPredicate.init(value: true)
+        let fetch2 = NSFetchRequest<Reward>(entityName: "Reward")
+        fetch.predicate = NSPredicate(value: true)
+        fetch2.predicate = NSPredicate(value: true)
         
         do {
             let results = try context.fetch(fetch).map({ $0.objectID })
+            let results2 = try context.fetch(fetch2).map({ $0.objectID })
             for i in results {
+                let obj = context.object(with: i)
+                context.delete(obj)
+            }
+            for i in results2 {
                 let obj = context.object(with: i)
                 context.delete(obj)
             }
@@ -108,6 +134,7 @@ class Ban: ObservableObject {
         request.addValue("zh-cn", forHTTPHeaderField: "Accept-Language")
         request.addValue("gzip, deflate, br", forHTTPHeaderField: "accept-encoding")
         state = .getCookie
+        reward = .waiting
         URLSession.shared.dataTaskPublisher(for: request)
             .map({ $1 as? HTTPURLResponse })
             .replaceError(with: nil)
@@ -247,6 +274,7 @@ class Ban: ObservableObject {
                     (UIApplication.shared.delegate as! AppDelegate).saveContext()
                     self?.todayCheckIn = true
                     self?.state = .normal
+                    self?.reward(check: item)
                 }
                 
                 var found = false
@@ -269,6 +297,68 @@ class Ban: ObservableObject {
                 print(error.localizedDescription)
                 self?.failedCompletion()
             }
+        }).store(in: &cancels)
+    }
+    
+    func reward(check: Check) {
+        self.reward = .sigin
+        let host = UserDefaults.standard.host
+        var request = URLRequest(url: URL(string: "\(host)/plugin.php?id=signin:signin_reg")!)
+        request.httpMethod = "POST"
+        request.addValue("application/json, text/javascript, */*; q=0.01", forHTTPHeaderField: "Accept")
+        request.addValue("XMLHttpRequest", forHTTPHeaderField: "X-Requested-With")
+        request.addValue("zh-cn", forHTTPHeaderField: "Accept-Language")
+        request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
+        request.addValue("gzip, deflate, br", forHTTPHeaderField: "Accept-Encoding")
+        request.addValue("application/x-www-form-urlencoded; charset=UTF-8", forHTTPHeaderField: "Content-Type")
+        request.addValue("\(host)", forHTTPHeaderField: "Origin")
+        request.addValue("\(host)//portal.html", forHTTPHeaderField: "Referer")
+        request.addValue(HTTPCookieStorage.shared.currentCookie, forHTTPHeaderField: "Cookie")
+        request.addValue("Keep-Alive", forHTTPHeaderField: "Connection")
+        let data = "ac=regsign".data(using: .utf8, allowLossyConversion: false)!
+        request.httpBody = data
+        
+        URLSession.shared.dataTaskPublisher(for: request).map({ data, response -> Data? in
+            if let res = response as? HTTPURLResponse {
+                self.cookieCache(response: res)
+                res.logCookie()
+            }
+            return data
+        })
+        .receive(on: DispatchQueue.main)
+        .eraseToAnyPublisher()
+        .replaceError(with: nil)
+        .sink(receiveValue: { [weak self] result in
+            print(result ?? "oops")
+            guard let data = result else {
+                self?.reward = .failed
+                return
+            }
+            
+            let completion: ((SnapReward) -> Void) = { info in
+                let context = (UIApplication.shared.delegate as! AppDelegate).persistentor.viewContext
+                let reward = Reward(context: context)
+                reward.time = Date()
+                reward.status = Int32(info.status)
+                reward.msg = info.msg
+                reward.reward_info = info.rewardInfo
+                reward.reward_type = info.rewardType
+                reward.check = check
+                context.insert(reward)
+                print(">>> 插入: \(info)")
+                (UIApplication.shared.delegate as! AppDelegate).saveContext()
+                self?.reward = .normal
+            }
+            
+            guard let raw = SnapReward(data: data) else {
+                guard let json = SnapReward.Onic(data: data) else {
+                    self?.reward = .failed
+                    return
+                }
+                completion(SnapReward(status: 1, msg: json.msg, rewardInfo: "", rewardType: ""))
+                return
+            }
+            completion(raw)
         }).store(in: &cancels)
     }
     

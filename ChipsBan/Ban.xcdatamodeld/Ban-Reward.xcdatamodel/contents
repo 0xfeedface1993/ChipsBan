@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19F101" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Check" representedClassName="Check" syncable="YES" codeGenerationType="class">
+        <attribute name="account" attributeType="String" defaultValueString="oops"/>
+        <attribute name="password" optional="YES" attributeType="String"/>
+        <attribute name="time" attributeType="Date" defaultDateTimeInterval="601880820" usesScalarValueType="NO"/>
+        <relationship name="reward" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Reward" inverseName="check" inverseEntity="Reward"/>
+    </entity>
+    <entity name="Reward" representedClassName="Reward" syncable="YES" codeGenerationType="class">
+        <attribute name="msg" optional="YES" attributeType="String"/>
+        <attribute name="reward_info" optional="YES" attributeType="String"/>
+        <attribute name="reward_type" optional="YES" attributeType="String"/>
+        <attribute name="status" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="time" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="check" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Check" inverseName="reward" inverseEntity="Check"/>
+    </entity>
+    <elements>
+        <element name="Check" positionX="-63" positionY="-18" width="128" height="103"/>
+        <element name="Reward" positionX="-63" positionY="9" width="128" height="133"/>
+    </elements>
+</model>
