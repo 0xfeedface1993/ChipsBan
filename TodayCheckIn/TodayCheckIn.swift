@@ -11,18 +11,22 @@ import SwiftUI
 
 struct Provider: TimelineProvider {
     public typealias Entry = DateEntry
-
-    public func snapshot(with context: Context, completion: @escaping (DateEntry) -> ()) {
+    
+    func placeholder(in context: Context) -> DateEntry {
+        DateEntry(date: Date())
+    }
+    
+    func getSnapshot(in context: Context, completion: @escaping (DateEntry) -> Void) {
         let entry = DateEntry(date: Date())
         completion(entry)
     }
-
-    public func timeline(with context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
+    
+    func getTimeline(in context: Context, completion: @escaping (Timeline<DateEntry>) -> Void) {
         let currentDate = Date()
         let timeline = Timeline(entries: [DateEntry(date: currentDate)], policy: .atEnd)
         completion(timeline)
     }
+    
 }
 
 struct DateEntry: TimelineEntry {
@@ -53,7 +57,7 @@ struct TodayCheckInEntryView : View {
                 .opacity(0.8)
                 .shadow(radius: 4)
                 .animation(Animation.easeOut)
-            Text(entry.ban.todayCheckIn ? "今日已签到":"签到")
+            Text(entry.ban.todayCheckIn ? "已签到":"签到")
                 .font(.body)
                 .foregroundColor(.white)
                 .lineLimit(nil)
@@ -66,7 +70,7 @@ struct TodayCheckIn: Widget {
     private let kind: String = "TodayCheckIn"
 
     public var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: Provider(), placeholder: PlaceholderView()) { entry in
+        StaticConfiguration(kind: kind, provider: Provider()) { entry in
             TodayCheckInEntryView(entry: entry)
         }
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])

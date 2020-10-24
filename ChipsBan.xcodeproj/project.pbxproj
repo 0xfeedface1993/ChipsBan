@@ -31,6 +31,7 @@
 		6337905B23E03EF1001A91D8 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6337905A23E03EF1001A91D8 /* SettingView.swift */; };
 		6337905D23E045E2001A91D8 /* LeftRightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6337905C23E045E2001A91D8 /* LeftRightView.swift */; };
 		6337905F23E14E85001A91D8 /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6337905E23E14E85001A91D8 /* InputView.swift */; };
+		636C94032544141C000C5BC2 /* SnapReward.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63AEBB4C24B1836900ADD82E /* SnapReward.swift */; };
 		63AEBB4D24B1836900ADD82E /* SnapReward.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63AEBB4C24B1836900ADD82E /* SnapReward.swift */; };
 		63B473E52487A82A00D490D4 /* PWMD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B473E42487A82A00D490D4 /* PWMD5.swift */; };
 		63B473F0248F5F6900D490D4 /* HostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B473EF248F5F6900D490D4 /* HostsView.swift */; };
@@ -309,6 +310,7 @@
 			files = (
 				3A2B61AD24A89AE3004E7413 /* CoreData+App.swift in Sources */,
 				3A2B619E24A895C5004E7413 /* TodayCheckIn.swift in Sources */,
+				636C94032544141C000C5BC2 /* SnapReward.swift in Sources */,
 				3A2B61AE24A89B34004E7413 /* Constant.swift in Sources */,
 				3A2B61AF24A89BAB004E7413 /* Host.swift in Sources */,
 				3A2B61A924A897CA004E7413 /* Ban.swift in Sources */,

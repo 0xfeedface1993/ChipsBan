@@ -69,6 +69,9 @@ class Ban: ObservableObject {
         fetch.fetchLimit = 1
         let sort = NSSortDescriptor.init(key: "time", ascending: false)
         fetch.sortDescriptors = [sort]
+        defer {
+            print(">>> update check in state: \(todayCheckIn)")
+        }
         do {
             let result = try context.fetch(fetch)
             if let item = result.first, Calendar.current.isDateInToday(item.time!) {
@@ -117,7 +120,6 @@ class Ban: ObservableObject {
                 let obj = context.object(with: i)
                 context.delete(obj)
             }
-            (UIApplication.shared.delegate as! AppDelegate).saveContext()
             CoreDataCore.share.saveContext()
         } catch {
             print(error.localizedDescription)
@@ -346,7 +348,7 @@ class Ban: ObservableObject {
             }
             
             let completion: ((SnapReward) -> Void) = { info in
-                let context = (UIApplication.shared.delegate as! AppDelegate).persistentor.viewContext
+                let context = CoreDataCore.share.persistentor.viewContext
                 let reward = Reward(context: context)
                 reward.time = Date()
                 reward.status = Int32(info.status)
@@ -356,7 +358,7 @@ class Ban: ObservableObject {
                 reward.check = check
                 context.insert(reward)
                 print(">>> 插入: \(info)")
-                (UIApplication.shared.delegate as! AppDelegate).saveContext()
+                CoreDataCore.share.saveContext()
                 self?.reward = .normal
             }
             
