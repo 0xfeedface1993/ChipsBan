@@ -73,7 +73,7 @@ struct TodayCheckIn: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             TodayCheckInEntryView(entry: entry)
         }
-        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        .supportedFamilies([.systemSmall])
         .configurationDisplayName("Today Check in Status Widget")
         .description("Check your check state widget.")
     }
@@ -84,8 +84,8 @@ struct TodayCheckIn_Previews: PreviewProvider {
         Group {
             TodayCheckInEntryView(entry: Provider.Entry(date: Date()))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
-            PlaceholderView()
-                .previewContext(WidgetPreviewContext(family: .systemSmall))
+            TodayCheckInEntryView(entry: Provider.Entry(date: Date()))
+                .previewContext(WidgetPreviewContext(family: .systemMedium))
         }
     }
 }
