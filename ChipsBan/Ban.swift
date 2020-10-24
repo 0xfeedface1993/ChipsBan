@@ -63,7 +63,7 @@ class Ban: ObservableObject {
     }
     
     func reload() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentor.viewContext
+        let context = CoreDataCore.share.persistentor.viewContext
         let fetch = NSFetchRequest<Check>(entityName: "Check")
         fetch.predicate = NSPredicate.init(value: true)
         fetch.fetchLimit = 1
@@ -100,7 +100,7 @@ class Ban: ObservableObject {
     func debugClear() {
         todayCheckIn = false
         
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentor.viewContext
+        let context = CoreDataCore.share.persistentor.viewContext
         let fetch = NSFetchRequest<Check>(entityName: "Check")
         let fetch2 = NSFetchRequest<Reward>(entityName: "Reward")
         fetch.predicate = NSPredicate(value: true)
@@ -118,12 +118,23 @@ class Ban: ObservableObject {
                 context.delete(obj)
             }
             (UIApplication.shared.delegate as! AppDelegate).saveContext()
+            CoreDataCore.share.saveContext()
         } catch {
             print(error.localizedDescription)
         }
     }
     
     func cookies() {
+        state = .getCookie
+//        let context = CoreDataCore.share.persistentor.viewContext
+//        let item = Check(context: context)
+//        item.time = Date()
+//        item.account = self.username ?? "oops"
+//        item.password = self.password
+//        context.insert(item)
+//        CoreDataCore.share.saveContext()
+//        self.todayCheckIn = true
+//        self.state = .normal
         let host = UserDefaults.standard.host
         guard let url = URL(string: host) else { return }
         var request = URLRequest(url: url)
@@ -264,13 +275,13 @@ class Ban: ObservableObject {
                 let doc = try SwiftSoup.parse(raw)
                 
                 let completion : () -> () = {
-                    let context = (UIApplication.shared.delegate as! AppDelegate).persistentor.viewContext
+                    let context = CoreDataCore.share.persistentor.viewContext
                     let item = Check(context: context)
                     item.time = Date()
                     item.account = self?.username ?? "oops"
                     item.password = self?.password
                     context.insert(item)
-                    (UIApplication.shared.delegate as! AppDelegate).saveContext()
+                    CoreDataCore.share.saveContext()
                     self?.todayCheckIn = true
                     self?.state = .normal
                     self?.reward(check: item)
