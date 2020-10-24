@@ -129,7 +129,6 @@ class Ban: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.addValue("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", forHTTPHeaderField: "Accept")
-        request.addValue("www.aitrug.space", forHTTPHeaderField: "Host")
         request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
         request.addValue("zh-cn", forHTTPHeaderField: "Accept-Language")
         request.addValue("gzip, deflate, br", forHTTPHeaderField: "accept-encoding")
